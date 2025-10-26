@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import TodoList from '../components/TodoList.vue';
 import AddTodo from '../components/AddTodo.vue';
 import EditTodo from '../components/EditTodo.vue';
@@ -32,14 +32,20 @@ const editItem = (id) => {
     item.value = items.value.find((item) => item.id === id);
 };
 
+const cancelEdit = () => {
+    item.value = null;
+};
+
+const action = computed(() => item.value ? 'edit' : 'add');
+
 </script>
 
 <template>
     <div class="home-page">
         <h1>Todo App</h1>
         <TodoList :items="items" @removeItem="removeItem" @editItem="editItem" />
-        <AddTodo @addItem="addItem" />
-        <EditTodo v-if="item" :item="item" @updateItem="updateItem" />
+        <AddTodo v-if="action === 'add'" @addItem="addItem" />
+        <EditTodo v-if="action === 'edit'" :item="item" @updateItem="updateItem" @cancelEdit="cancelEdit" />
     </div>
 </template>
 
