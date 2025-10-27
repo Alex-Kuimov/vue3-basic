@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue';
+import Button from './ui/Button.vue';
+import Input from './ui/Input.vue';
 import { useTodoStore } from '../stores/todo.store.js';
 
 const todoList = useTodoStore();
@@ -17,8 +19,8 @@ const onSubmit = () => {
         <h1>Add item</h1>
 
         <form @submit.prevent="onSubmit">
-            <input v-model="text" type="text" name="text" />
-            <button type="submit">Add</button>
+            <Input v-model="text" type="text" name="text" />
+            <Button type="submit">Add</Button>
         </form>
     </div>
 </template>
