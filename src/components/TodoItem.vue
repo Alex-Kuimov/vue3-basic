@@ -1,24 +1,17 @@
 <script setup>
-import { ref, defineEmits } from 'vue';
+import { useTodoStore } from '../stores/todo.store.js';
+
 const { id, text } = defineProps(['id', 'text']);
 
-const emit = defineEmits(['removeItem', 'editItem']);
-
-const removeItem = (id) => {
-    emit('removeItem', id);
-};
-
-const editItem = (id) => {
-    emit('editItem', id);
-};
+const todoList = useTodoStore();
 
 </script>
 
 <template>
     <div class="todo-item" :data-id="id">
         <div class="todo-item-text">{{ text }}</div>
-        <button class="todo-item-btn" @click="removeItem(id)">remove</button>
-        <button class="todo-item-btn" @click="editItem(id)">edit</button>
+        <button class="todo-item-btn" @click="todoList.removeItem(id)">remove</button>
+        <button class="todo-item-btn" @click="todoList.editItem(id)">edit</button>
     </div>
 </template>
 

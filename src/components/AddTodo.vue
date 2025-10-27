@@ -1,12 +1,13 @@
 <script setup>
-import { ref, defineEmits } from 'vue';
+import { ref } from 'vue';
+import { useTodoStore } from '../stores/todo.store.js';
+
+const todoList = useTodoStore();
 
 const text = ref('');
 
-const emit = defineEmits(['addItem']);
-
 const onSubmit = () => {
-    emit('addItem', text.value);
+    todoList.addItem(text.value);
     text.value = '';
 }
 </script>

@@ -1,22 +1,26 @@
 <script setup>
 import { ref, defineEmits, onMounted, watch } from 'vue';
 
+import { useTodoStore } from '../stores/todo.store.js';
+
 const { item } = defineProps(['item']);
+
+const todoList = useTodoStore();
 
 const currentItem = ref({});
 
 const emit = defineEmits(['updateItem', 'cancelEdit']);
 
 const onSubmit = () => {
-    emit('updateItem', currentItem.value);
+    todoList.updateItem(currentItem.value);
 }
 
 const cancelEdit = () => {
-    emit('cancelEdit');
+    todoList.cancelEdit();
 }
 
 watch(() => item, (newValue) => {
-    currentItem.value = newValue
+    currentItem.value = newValue;
 });
 
 onMounted(() => {
