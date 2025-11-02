@@ -19,6 +19,9 @@ onMounted(() => {
         <TodoList :items="todoList.items" />
         <EditTodo v-if="todoList.isEditing" :item="todoList.item" />
         <AddTodo v-else />
+
+        <p v-if="todoList.loading">Обработака данных...</p>
+        <p v-if="todoList.error">todoList.error</p>
     </div>
 </template>
 
