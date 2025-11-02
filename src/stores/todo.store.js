@@ -1,20 +1,19 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import axios from 'axios'
+import { api, API_ENDPOINTS } from '../api.js';
 
 export const useTodoStore = defineStore('todo', () => {
-    const API_URL = 'http://127.0.0.1:8000/api/todos/';
     const items = ref(null);
     const item = ref(null);
-    const loading = ref(false)
-    const error = ref(null)
+    const loading = ref(false);
+    const error = ref(null);
 
     const getItems = async () => {
         loading.value = true;
         error.value = null;
 
         try {
-            const { data } = await axios.get(API_URL);
+            const { data } = await api.get(API_ENDPOINTS.TODO);
             items.value = data;
         } catch (err) {
             error.value = err.message;
@@ -28,7 +27,7 @@ export const useTodoStore = defineStore('todo', () => {
         error.value = null;
 
         try {
-            const { data } = await axios.post(API_URL, { text });
+            const { data } = await api.post(API_ENDPOINTS.TODO, { text });
             items.value.push(data);
         } catch (err) {
             error.value = err.message;
@@ -42,7 +41,7 @@ export const useTodoStore = defineStore('todo', () => {
         error.value = null;
 
         try {
-            await axios.delete(API_URL + id)
+            await api.delete(API_ENDPOINTS.TODO + id)
             items.value = items.value.filter((item) => item.id !== id);
             item.value = null;
         } catch (err) {
@@ -57,7 +56,7 @@ export const useTodoStore = defineStore('todo', () => {
         error.value = null;
 
         try {
-            const { data } = await axios.put(API_URL + updated.id, updated);
+            const { data } = await api.put(API_ENDPOINTS.TODO + updated.id, updated);
             items.value = items.value.map((item) => item.id === data.id ? { ...data } : item);
             item.value = null;
         } catch (err) {
