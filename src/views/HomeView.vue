@@ -15,7 +15,6 @@ onMounted(() => {
 
 <template>
     <div class="home-page">
-        <h1>Todo App</h1>
         <TodoList :items="todoList.items" />
         <EditTodo v-if="todoList.isEditing" :item="todoList.item" />
         <AddTodo v-else />
