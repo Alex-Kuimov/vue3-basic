@@ -1,27 +1,70 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import { data } from './mock.js';
+import axios from 'axios'
 
 export const useTodoStore = defineStore('todo', () => {
+    const API_URL = 'http://127.0.0.1:8000/api/todos/';
     const items = ref(null);
     const item = ref(null);
+    const loading = ref(false)
+    const error = ref(null)
 
-    const getItems = () => {
-        items.value = [...data];
+    const getItems = async () => {
+        loading.value = true;
+        error.value = null;
+
+        try {
+            const { data } = await axios.get(API_URL);
+            items.value = data;
+        } catch (err) {
+            error.value = err.message;
+        } finally {
+            loading.value = false;
+        }
     }
 
-    const addItem = (text) => {
-        items.value.push({ id: items.value.length + 1, text });
+    const addItem = async (text) => {
+        loading.value = true;
+        error.value = null;
+
+        try {
+            const { data } = await axios.post(API_URL, { text });
+            items.value.push(data);
+        } catch (err) {
+            error.value = err.message;
+        } finally {
+            loading.value = false;
+        }
     };
 
-    const removeItem = (id) => {
-        items.value = items.value.filter((item) => item.id !== id);
-        item.value = null;
+    const removeItem = async (id) => {
+        loading.value = true;
+        error.value = null;
+
+        try {
+            await axios.delete(API_URL + id)
+            items.value = items.value.filter((item) => item.id !== id);
+            item.value = null;
+        } catch (err) {
+            error.value = err.message;
+        } finally {
+            loading.value = false;
+        }
     };
 
-    const updateItem = (updated) => {
-        items.value = items.value.map((item) => item.id === updated.id ? { ...updated } : item);
-        item.value = null;
+    const updateItem = async (updated) => {
+        loading.value = true;
+        error.value = null;
+
+        try {
+            const { data } = await axios.put(API_URL + updated.id, updated);
+            items.value = items.value.map((item) => item.id === data.id ? { ...data } : item);
+            item.value = null;
+        } catch (err) {
+            error.value = err.message;
+        } finally {
+            loading.value = false;
+        }
     };
 
     const editItem = (id) => {
@@ -36,5 +79,5 @@ export const useTodoStore = defineStore('todo', () => {
         return item.value !== null;
     });
 
-    return { item, items, getItems, addItem, removeItem, updateItem, editItem, cancelEdit, isEditing }
+    return { item, items, getItems, addItem, removeItem, updateItem, editItem, cancelEdit, isEditing, loading, error }
 });
