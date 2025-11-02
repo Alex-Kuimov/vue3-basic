@@ -1,15 +1,15 @@
 <script setup>
 import { ref, defineEmits, onMounted, watch } from 'vue';
-
+import Button from './ui/Button.vue';
+import Input from './ui/Input.vue';
 import { useTodoStore } from '../stores/todo.store.js';
 
 const { item } = defineProps(['item']);
+const emit = defineEmits(['updateItem', 'cancelEdit']);
 
 const todoList = useTodoStore();
 
 const currentItem = ref({});
-
-const emit = defineEmits(['updateItem', 'cancelEdit']);
 
 const onSubmit = () => {
     todoList.updateItem(currentItem.value);
@@ -26,7 +26,6 @@ watch(() => item, (newValue) => {
 onMounted(() => {
     currentItem.value = { ...item };
 });
-
 </script>
 
 <template>
@@ -34,9 +33,9 @@ onMounted(() => {
         <h1>Edit item</h1>
 
         <form @submit.prevent="onSubmit">
-            <input v-model="currentItem.text" type="text" name="text" />
-            <button type="submit">Update</button>
-            <button type="button" @click="cancelEdit">Cancel</button>
+            <Input v-model="currentItem.text" type="text" name="text" />
+            <Button type="submit">Update</Button>
+            <Button type="button" @click="cancelEdit">Cancel</Button>
         </form>
     </div>
 </template>
