@@ -1,19 +1,30 @@
 <script setup>
+import { ref } from 'vue';
 import Input from '../ui/Input.vue';
 import Button from '../ui/Button.vue';
+
+const form = ref({
+	email: '',
+	password: '',
+});
+
+const onSubmit = () => {
+	console.log(form.value);
+};
+
 </script>
 
 <template>
 	<div class="auth-form">
-		<form>
+		<form @submit.prevent="onSubmit">
 			<div class="form-group">
 				<label for="email">Email:</label>
-				<Input id="email" type="email" required />
+				<Input v-model="form.email" id="email" type="email" required />
 			</div>
 
 			<div class="form-group">
-				<label for="password">Пароль:</label>
-				<Input id="password" type="password" required />
+				<label for="password">Password:</label>
+				<Input v-model="form.password" id="password" type="password" required />
 			</div>
 
 			<Button type="submit">
