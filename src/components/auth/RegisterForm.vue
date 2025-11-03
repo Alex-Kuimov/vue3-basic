@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Input from '../ui/Input.vue';
 import Button from '../ui/Button.vue';
+import { useAuthStore } from '../../stores/auth.store.js';
 
 const form = ref({
 	name: '',
@@ -10,8 +12,12 @@ const form = ref({
 	password_confirmation: ''
 });
 
-const onSubmit = () => {
-	console.log(form.value);
+const authStore = useAuthStore();
+const router = useRouter();
+
+const onSubmit = async () => {
+	await authStore.reg(form.value);
+	router.push('/');
 };
 </script>
 
@@ -19,7 +25,7 @@ const onSubmit = () => {
 	<div class="auth-form">
 		<form @submit.prevent="onSubmit">
 			<div class="form-group">
-				<label for="email">Name:</label>
+				<label for="name">Name:</label>
 				<Input v-model="form.name" id="name" type="text" required />
 			</div>
 
@@ -34,15 +40,22 @@ const onSubmit = () => {
 			</div>
 
 			<div class="form-group">
-				<label for="password">Confirmation:</label>
+				<label for="password_confirmation">Confirmation:</label>
 				<Input v-model="form.password_confirmation" id="password_confirmation" type="password" required />
 			</div>
 
-			<Button type="submit">
-				Зарегистрироваться
+			<Button type="submit" :disabled="authStore.loading">
+				{{ authStore.loading ? 'Регистрация...' : 'Зарегистрироваться' }}
 			</Button>
+
+			<p v-if="authStore.error" class="error">{{ authStore.error }}</p>
 		</form>
 	</div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.error {
+	color: red;
+	margin-top: 10px;
+}
+</style>

@@ -9,7 +9,7 @@ export const api = axios.create({
 
 export const API_ENDPOINTS = {
     TODO: `${API_BASE_URL}/todos/`,
-    USER: `${API_BASE_URL}/users/`,
-    LOGIN: `${API_BASE_URL}/login/`,
-    LOGOUT: `${API_BASE_URL}/logout/`,
+    LOGIN: `${API_BASE_URL}/auth/login/`,
+    LOGOUT: `${API_BASE_URL}/auth/logout/`,
+    REG: `${API_BASE_URL}/auth/register/`,
 };

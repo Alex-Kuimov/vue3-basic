@@ -1,15 +1,21 @@
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Input from '../ui/Input.vue';
 import Button from '../ui/Button.vue';
+import { useAuthStore } from '../../stores/auth.store.js';
 
 const form = ref({
 	email: '',
 	password: '',
 });
 
-const onSubmit = () => {
-	console.log(form.value);
+const authStore = useAuthStore();
+const router = useRouter();
+
+const onSubmit = async () => {
+	await authStore.login(form.value);
+	router.push('/');
 };
 
 </script>
@@ -27,11 +33,18 @@ const onSubmit = () => {
 				<Input v-model="form.password" id="password" type="password" required />
 			</div>
 
-			<Button type="submit">
-				Войти
+			<Button type="submit" :disabled="authStore.loading">
+				{{ authStore.loading ? 'Вход...' : 'Войти' }}
 			</Button>
+
+			<p v-if="authStore.error" class="error">{{ authStore.error }}</p>
 		</form>
 	</div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.error {
+	color: red;
+	margin-top: 10px;
+}
+</style>
