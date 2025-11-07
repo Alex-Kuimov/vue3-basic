@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { api, API_ENDPOINTS } from '../api.js';
 
@@ -6,26 +6,29 @@ export const useAuthStore = defineStore('auth', () => {
     const loading = ref(false);
     const error = ref(null);
     const token = ref(null);
-    const isAuth = ref(false);
+
+    const isAuth = computed(() => {
+        if (token.value) {
+            return true;
+        }
+
+        token.value = localStorage.getItem('authToken');
+
+        if (token.value) {
+            return true;
+        }
+
+        return false;
+    });
 
     const setToken = (value) => {
-        token.value = value;
         localStorage.setItem('authToken', value);
-        isAuth.value = true;
-        api.defaults.headers.common['Authorization'] = `Bearer ${value}`;
-    };
-
-    const authInit = () => {
-        token.value = localStorage.getItem('authToken');
-        isAuth.value = !!token.value;
-        api.defaults.headers.common['Authorization'] = `Bearer ${token.value}`;
+        token.value = value;
     };
 
     const clearToken = () => {
-        token.value = null;
         localStorage.removeItem('authToken');
-        isAuth.value = false;
-        delete api.defaults.headers.common['Authorization'];
+        token.value = null;
     };
 
     const reg = async (userData) => {
@@ -70,5 +73,12 @@ export const useAuthStore = defineStore('auth', () => {
         }
     };
 
-    return { reg, login, logout, authInit, loading, error, isAuth };
+    return {
+        reg,
+        login,
+        logout,
+        loading,
+        error,
+        isAuth
+    };
 });
