@@ -11,10 +11,6 @@ const handleLogout = async () => {
 	router.push('/login');
 };
 
-onMounted(() => {
-	authStore.authInit();
-});
-
 </script>
 
 <template>
